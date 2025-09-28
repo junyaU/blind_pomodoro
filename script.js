@@ -5,9 +5,12 @@ class BlindPomodoro {
         this.currentSession = 'work'; // 'work', 'break', 'longBreak'
         this.completedPomodoros = 0;
         this.remainingTime = 0;
+        this.startTime = null;
+        this.totalDuration = 0;
 
         this.initializeEventListeners();
         this.updateDisplay();
+        this.initializeVisibilityAPI();
     }
 
     initializeEventListeners() {
@@ -18,6 +21,15 @@ class BlindPomodoro {
         if ("Notification" in window && Notification.permission === "default") {
             Notification.requestPermission();
         }
+    }
+
+    initializeVisibilityAPI() {
+        document.addEventListener('visibilitychange', () => {
+            if (!document.hidden && this.isRunning) {
+                // タブがアクティブになった時、時間を再計算
+                this.updateTimer();
+            }
+        });
     }
 
     getSettings() {
@@ -35,28 +47,34 @@ class BlindPomodoro {
         const settings = this.getSettings();
 
         if (this.currentSession === 'work') {
-            this.remainingTime = settings.workTime * 60;
+            this.totalDuration = settings.workTime * 60;
         } else if (this.currentSession === 'break') {
-            this.remainingTime = settings.breakTime * 60;
+            this.totalDuration = settings.breakTime * 60;
         } else {
-            this.remainingTime = settings.longBreakTime * 60;
+            this.totalDuration = settings.longBreakTime * 60;
         }
 
+        this.startTime = Date.now();
         this.isRunning = true;
         this.updateDisplay();
         this.updateControls();
 
         this.timer = setInterval(() => {
-            this.remainingTime--;
+            this.updateTimer();
+        }, 100);
+    }
 
-            if (this.currentSession !== 'work') {
-                this.updateTimerDisplay();
-            }
+    updateTimer() {
+        const elapsed = (Date.now() - this.startTime) / 1000;
+        this.remainingTime = Math.max(0, this.totalDuration - elapsed);
 
-            if (this.remainingTime <= 0) {
-                this.complete();
-            }
-        }, 1000);
+        if (this.currentSession !== 'work') {
+            this.updateTimerDisplay();
+        }
+
+        if (this.remainingTime <= 0) {
+            this.complete();
+        }
     }
 
     stop() {
@@ -66,6 +84,7 @@ class BlindPomodoro {
         }
         this.isRunning = false;
         this.currentSession = 'work';
+        this.startTime = null;
         this.updateDisplay();
         this.updateControls();
     }
@@ -139,7 +158,7 @@ class BlindPomodoro {
     updateTimerDisplay() {
         if (this.currentSession !== 'work') {
             const minutes = Math.floor(this.remainingTime / 60);
-            const seconds = this.remainingTime % 60;
+            const seconds = Math.floor(this.remainingTime % 60);
             document.getElementById('timer-display').textContent =
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
