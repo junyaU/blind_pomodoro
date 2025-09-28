@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blind Pomodoro</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div id="status" class="status">準備完了</div>
+
+        <div id="timer-display" class="hidden"></div>
+        <div id="hidden-timer" class="hidden-timer hidden">作業に集中してください...</div>
+
+        <div class="controls">
+            <button id="start-btn" class="btn">スタート</button>
+            <button id="stop-btn" class="btn stop hidden">停止</button>
+        </div>
+
+        <button class="toggle-settings" onclick="toggleSettings()">設定</button>
+
+        <div id="settings" class="settings hidden">
+            <h3>設定</h3>
+            <div class="setting-group">
+                <label>作業時間 (分)</label>
+                <input type="number" id="work-time" value="25" min="1" max="60">
+            </div>
+            <div class="setting-group">
+                <label>休憩時間 (分)</label>
+                <input type="number" id="break-time" value="5" min="1" max="30">
+            </div>
+            <div class="setting-group">
+                <label>長時間休憩 (分)</label>
+                <input type="number" id="long-break-time" value="15" min="5" max="60">
+            </div>
+            <div class="setting-group">
+                <label>長時間休憩の頻度</label>
+                <input type="number" id="long-break-frequency" value="4" min="2" max="10">
+            </div>
+            <div class="setting-group">
+                <label>作業を自動スタート</label>
+                <input type="checkbox" id="auto-start-work">
+            </div>
+            <div class="setting-group">
+                <label>休憩を自動スタート</label>
+                <input type="checkbox" id="auto-start-break" checked>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,164 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 500px;
+    width: 90%;
+}
+
+.status {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+.status.working {
+    color: #2d3748;
+}
+
+.status.break {
+    color: #e53e3e;
+}
+
+.timer-display {
+    font-size: 4rem;
+    font-weight: bold;
+    margin: 30px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.hidden-timer {
+    font-size: 1.2rem;
+    color: #718096;
+    margin: 30px 0;
+    font-style: italic;
+}
+
+.controls {
+    margin: 30px 0;
+}
+
+.btn {
+    background: #4299e1;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: #3182ce;
+    transform: translateY(-2px);
+}
+
+.btn:disabled {
+    background: #a0aec0;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn.stop {
+    background: #e53e3e;
+}
+
+.btn.stop:hover {
+    background: #c53030;
+}
+
+.settings {
+    background: #f7fafc;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 20px 0;
+    text-align: left;
+}
+
+.settings h3 {
+    margin-bottom: 20px;
+    color: #2d3748;
+    text-align: center;
+}
+
+.setting-group {
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.setting-group label {
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.setting-group input[type="number"] {
+    width: 80px;
+    padding: 8px 12px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.setting-group input[type="checkbox"] {
+    transform: scale(1.5);
+}
+
+.toggle-settings {
+    background: transparent;
+    color: #4299e1;
+    border: 2px solid #4299e1;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: all 0.3s ease;
+}
+
+.toggle-settings:hover {
+    background: #4299e1;
+    color: white;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.working-indicator {
+    animation: pulse 2s infinite;
+}
