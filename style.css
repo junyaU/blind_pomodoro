@@ -116,6 +116,18 @@ body.dark-mode #volume-value {
     color: #94a3b8;
 }
 
+body.dark-mode .feedback-btn {
+    background: #3b82f6;
+}
+
+body.dark-mode .feedback-btn:hover {
+    background: #2563eb;
+}
+
+body.dark-mode .feedback-description {
+    color: #94a3b8;
+}
+
 .container {
     background: rgba(255, 255, 255, 0.95);
     border-radius: 20px;
@@ -344,6 +356,37 @@ body.dark-mode #volume-value {
     min-width: 40px;
     font-size: 0.9rem;
     color: #718096;
+}
+
+/* フィードバックセクション */
+.feedback-section {
+    padding: 15px 0;
+    text-align: center;
+}
+
+.feedback-btn {
+    width: 100%;
+    background: #4299e1;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 8px;
+}
+
+.feedback-btn:hover {
+    background: #3182ce;
+    transform: translateY(-1px);
+}
+
+.feedback-description {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #718096;
+    line-height: 1.3;
 }
 
 /* オーバーレイ */

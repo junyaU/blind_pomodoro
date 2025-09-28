@@ -58,7 +58,7 @@ class BlindPomodoro {
         // 音量スライダーのイベント
         const volumeSlider = document.getElementById('notification-volume');
         const volumeValue = document.getElementById('volume-value');
-        
+
         volumeSlider.addEventListener('input', (e) => {
             const volume = e.target.value;
             volumeValue.textContent = `${volume}%`;
@@ -78,6 +78,13 @@ class BlindPomodoro {
                 document.body.classList.remove('dark-mode');
             }
             this.saveSettings();
+        });
+
+        // フィードバックボタンのイベント
+        document.getElementById('feedback-btn').addEventListener('click', () => {
+            // Google FormのURLを新しいタブで開く
+            const feedbackUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfnIJ9xGEPRteqQL2lo134Ge3qGKsqdX3i3xXRQOmAZLIqF6g/viewform?usp=dialog';
+            window.open(feedbackUrl, '_blank');
         });
 
         // その他の設定変更時の保存
@@ -121,7 +128,7 @@ class BlindPomodoro {
         const savedSettings = localStorage.getItem('pomodoroSettings');
         if (savedSettings) {
             const settings = JSON.parse(savedSettings);
-            
+
             // 設定値をUIに反映
             if (settings.workTime) document.getElementById('work-time').value = settings.workTime;
             if (settings.breakTime) document.getElementById('break-time').value = settings.breakTime;
@@ -171,7 +178,7 @@ class BlindPomodoro {
 
     updateTimer() {
         if (this.isPaused) return;
-        
+
         const elapsed = (Date.now() - this.startTime) / 1000;
         this.remainingTime = Math.max(0, this.totalDuration - elapsed);
 
@@ -186,30 +193,30 @@ class BlindPomodoro {
 
     pause() {
         if (!this.isRunning || this.isPaused) return;
-        
+
         this.isPaused = true;
         this.pausedTime = this.remainingTime;
-        
+
         if (this.timer) {
             clearInterval(this.timer);
             this.timer = null;
         }
-        
+
         this.updateDisplay();
         this.updateControls();
     }
 
     resume() {
         if (!this.isPaused) return;
-        
+
         this.isPaused = false;
         this.totalDuration = this.pausedTime;
         this.startTime = Date.now();
-        
+
         this.timer = setInterval(() => {
             this.updateTimer();
         }, 100);
-        
+
         this.updateDisplay();
         this.updateControls();
     }
@@ -353,12 +360,12 @@ class BlindPomodoro {
 
     playNotificationSound() {
         const settings = this.getSettings();
-        
+
         // 通知音がオフの場合は再生しない
         if (!settings.notificationSound) {
             return;
         }
-        
+
         try {
             // Create a gentle notification sound using Web Audio API
             const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -375,7 +382,7 @@ class BlindPomodoro {
 
             // 音量を設定に基づいて調整（0-100%を0-0.3の範囲にマッピング）
             const maxVolume = 0.3 * (settings.notificationVolume / 100);
-            
+
             // Create envelope for natural sound
             gainNode.gain.setValueAtTime(0, audioContext.currentTime);
             gainNode.gain.linearRampToValueAtTime(maxVolume, audioContext.currentTime + 0.1);
