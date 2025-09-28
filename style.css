@@ -12,6 +12,103 @@ body {
     align-items: center;
     justify-content: center;
     color: #333;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ダークモードスタイル */
+body.dark-mode {
+    background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+    color: #e2e8f0;
+}
+
+body.dark-mode .container {
+    background: rgba(30, 30, 45, 0.95);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .status {
+    color: #e2e8f0;
+}
+
+body.dark-mode .status.working {
+    color: #cbd5e1;
+}
+
+body.dark-mode .status.break {
+    color: #f87171;
+}
+
+body.dark-mode .timer-display {
+    color: #e2e8f0;
+}
+
+body.dark-mode .hidden-timer {
+    color: #94a3b8;
+}
+
+body.dark-mode .btn {
+    background: #3b82f6;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .btn:hover {
+    background: #2563eb;
+}
+
+body.dark-mode .btn.stop {
+    background: #ef4444;
+}
+
+body.dark-mode .btn.stop:hover {
+    background: #dc2626;
+}
+
+body.dark-mode .hamburger-menu {
+    background: rgba(30, 30, 45, 0.9);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .hamburger-menu:hover {
+    background: rgba(45, 45, 60, 0.95);
+}
+
+body.dark-mode .hamburger-menu span {
+    background: #e2e8f0;
+}
+
+body.dark-mode .side-menu {
+    background: #1e1e2e;
+    box-shadow: -5px 0 20px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .side-menu-header {
+    border-bottom: 1px solid #374151;
+}
+
+body.dark-mode .side-menu-header h3 {
+    color: #e2e8f0;
+}
+
+body.dark-mode .setting-group label {
+    color: #cbd5e1;
+}
+
+body.dark-mode .setting-group input[type="number"] {
+    background: #374151;
+    border: 2px solid #4b5563;
+    color: #e2e8f0;
+}
+
+body.dark-mode .setting-divider {
+    background: #374151;
+}
+
+body.dark-mode .volume-control input[type="range"] {
+    background: #374151;
+}
+
+body.dark-mode #volume-value {
+    color: #94a3b8;
 }
 
 .container {

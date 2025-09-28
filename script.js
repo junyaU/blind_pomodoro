@@ -67,10 +67,20 @@ class BlindPomodoro {
             this.saveSettings();
         });
 
+        // ダークモード設定のイベント
+        document.getElementById('dark-mode').addEventListener('change', (e) => {
+            if (e.target.checked) {
+                document.body.classList.add('dark-mode');
+            } else {
+                document.body.classList.remove('dark-mode');
+            }
+            this.saveSettings();
+        });
+
         // その他の設定変更時の保存
         const settingInputs = document.querySelectorAll('.setting-group input');
         settingInputs.forEach(input => {
-            if (input.id !== 'notification-sound' && input.id !== 'notification-volume') {
+            if (input.id !== 'notification-sound' && input.id !== 'notification-volume' && input.id !== 'dark-mode') {
                 input.addEventListener('change', () => this.saveSettings());
             }
         });
@@ -99,7 +109,8 @@ class BlindPomodoro {
             autoStartWork: document.getElementById('auto-start-work').checked,
             autoStartBreak: document.getElementById('auto-start-break').checked,
             notificationSound: document.getElementById('notification-sound').checked,
-            notificationVolume: parseInt(document.getElementById('notification-volume').value)
+            notificationVolume: parseInt(document.getElementById('notification-volume').value),
+            darkMode: document.getElementById('dark-mode').checked
         };
     }
 
@@ -119,6 +130,12 @@ class BlindPomodoro {
             if (settings.notificationVolume !== undefined) {
                 document.getElementById('notification-volume').value = settings.notificationVolume;
                 document.getElementById('volume-value').textContent = `${settings.notificationVolume}%`;
+            }
+            if (settings.darkMode !== undefined) {
+                document.getElementById('dark-mode').checked = settings.darkMode;
+                if (settings.darkMode) {
+                    document.body.classList.add('dark-mode');
+                }
             }
         }
     }
