@@ -10,21 +10,19 @@
 </head>
 
 <body>
-    <div class="container">
-        <div id="status" class="status">準備完了</div>
+    <!-- ハンバーガーメニューボタン -->
+    <button class="hamburger-menu" id="hamburger-menu" aria-label="設定メニュー">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
 
-        <div id="timer-display" class="hidden"></div>
-        <div id="hidden-timer" class="hidden-timer hidden">作業に集中してください...</div>
-
-        <div class="controls">
-            <button id="start-btn" class="btn">スタート</button>
-            <button id="stop-btn" class="btn stop hidden">停止</button>
-        </div>
-
-        <button class="toggle-settings" onclick="toggleSettings()">設定</button>
-
-        <div id="settings" class="settings hidden">
+    <!-- サイドメニュー -->
+    <div class="side-menu" id="side-menu">
+        <div class="side-menu-header">
             <h3>設定</h3>
+        </div>
+        <div class="side-menu-content">
             <div class="setting-group">
                 <label>作業時間 (分)</label>
                 <input type="number" id="work-time" value="25" min="1" max="60">
@@ -49,6 +47,33 @@
                 <label>休憩を自動スタート</label>
                 <input type="checkbox" id="auto-start-break" checked>
             </div>
+            <div class="setting-divider"></div>
+            <div class="setting-group">
+                <label>通知音</label>
+                <input type="checkbox" id="notification-sound" checked>
+            </div>
+            <div class="setting-group">
+                <label>音量</label>
+                <div class="volume-control">
+                    <input type="range" id="notification-volume" min="0" max="100" value="30">
+                    <span id="volume-value">30%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- オーバーレイ -->
+    <div class="menu-overlay" id="menu-overlay"></div>
+
+    <div class="container">
+        <div id="status" class="status">集中の準備</div>
+
+        <div id="timer-display" class="hidden"></div>
+        <div id="hidden-timer" class="hidden-timer hidden">作業に集中してください...</div>
+
+        <div class="controls">
+            <button id="start-btn" class="btn">スタート</button>
+            <button id="stop-btn" class="btn stop hidden">停止</button>
         </div>
     </div>
 
