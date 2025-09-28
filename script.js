@@ -2,11 +2,13 @@ class BlindPomodoro {
     constructor() {
         this.timer = null;
         this.isRunning = false;
+        this.isPaused = false;
         this.currentSession = 'work'; // 'work', 'break', 'longBreak'
         this.completedPomodoros = 0;
         this.remainingTime = 0;
         this.startTime = null;
         this.totalDuration = 0;
+        this.pausedTime = 0;
 
         this.loadSettings();
         this.initializeEventListeners();
@@ -16,7 +18,8 @@ class BlindPomodoro {
 
     initializeEventListeners() {
         document.getElementById('start-btn').addEventListener('click', () => this.start());
-        document.getElementById('stop-btn').addEventListener('click', () => this.stop());
+        document.getElementById('pause-btn').addEventListener('click', () => this.pause());
+        document.getElementById('resume-btn').addEventListener('click', () => this.resume());
 
         // ハンバーガーメニューのイベント
         const hamburgerMenu = document.getElementById('hamburger-menu');
@@ -167,6 +170,8 @@ class BlindPomodoro {
     }
 
     updateTimer() {
+        if (this.isPaused) return;
+        
         const elapsed = (Date.now() - this.startTime) / 1000;
         this.remainingTime = Math.max(0, this.totalDuration - elapsed);
 
@@ -179,14 +184,46 @@ class BlindPomodoro {
         }
     }
 
+    pause() {
+        if (!this.isRunning || this.isPaused) return;
+        
+        this.isPaused = true;
+        this.pausedTime = this.remainingTime;
+        
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+        
+        this.updateDisplay();
+        this.updateControls();
+    }
+
+    resume() {
+        if (!this.isPaused) return;
+        
+        this.isPaused = false;
+        this.totalDuration = this.pausedTime;
+        this.startTime = Date.now();
+        
+        this.timer = setInterval(() => {
+            this.updateTimer();
+        }, 100);
+        
+        this.updateDisplay();
+        this.updateControls();
+    }
+
     stop() {
         if (this.timer) {
             clearInterval(this.timer);
             this.timer = null;
         }
         this.isRunning = false;
+        this.isPaused = false;
         this.currentSession = 'work';
         this.startTime = null;
+        this.pausedTime = 0;
         this.updateDisplay();
         this.updateControls();
     }
@@ -241,6 +278,18 @@ class BlindPomodoro {
             statusEl.className = 'status';
             timerDisplayEl.className = 'hidden';
             hiddenTimerEl.className = 'hidden-timer hidden';
+        } else if (this.isPaused) {
+            if (this.currentSession === 'work') {
+                statusEl.textContent = '作業を中断中';
+                hiddenTimerEl.textContent = '作業を中断しています...';
+            } else {
+                const sessionName = this.currentSession === 'longBreak' ? '長時間休憩' : '休憩';
+                statusEl.textContent = `${sessionName}を中断中`;
+                hiddenTimerEl.textContent = `${sessionName}を中断しています...`;
+            }
+            statusEl.className = 'status paused';
+            timerDisplayEl.className = 'hidden';
+            hiddenTimerEl.className = 'hidden-timer';
         } else if (this.currentSession === 'work') {
             statusEl.textContent = '作業中';
             statusEl.className = 'status working working-indicator';
@@ -268,14 +317,24 @@ class BlindPomodoro {
 
     updateControls() {
         const startBtn = document.getElementById('start-btn');
-        const stopBtn = document.getElementById('stop-btn');
+        const pauseBtn = document.getElementById('pause-btn');
+        const resumeBtn = document.getElementById('resume-btn');
 
-        if (this.isRunning) {
-            startBtn.className = 'btn hidden';
-            stopBtn.className = 'btn stop';
-        } else {
+        if (!this.isRunning) {
+            // 初期状態
             startBtn.className = 'btn';
-            stopBtn.className = 'btn stop hidden';
+            pauseBtn.className = 'btn pause hidden';
+            resumeBtn.className = 'btn hidden';
+        } else if (this.isPaused) {
+            // 一時停止中
+            startBtn.className = 'btn hidden';
+            pauseBtn.className = 'btn pause hidden';
+            resumeBtn.className = 'btn';
+        } else {
+            // 実行中
+            startBtn.className = 'btn hidden';
+            pauseBtn.className = 'btn pause';
+            resumeBtn.className = 'btn hidden';
         }
     }
 

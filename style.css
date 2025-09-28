@@ -38,6 +38,10 @@ body.dark-mode .status.break {
     color: #f87171;
 }
 
+body.dark-mode .status.paused {
+    color: #fbbf24;
+}
+
 body.dark-mode .timer-display {
     color: #e2e8f0;
 }
@@ -55,13 +59,14 @@ body.dark-mode .btn:hover {
     background: #2563eb;
 }
 
-body.dark-mode .btn.stop {
-    background: #ef4444;
+body.dark-mode .btn.pause {
+    background: #10b981;
 }
 
-body.dark-mode .btn.stop:hover {
-    background: #dc2626;
+body.dark-mode .btn.pause:hover {
+    background: #34d399;
 }
+
 
 body.dark-mode .hamburger-menu {
     background: rgba(30, 30, 45, 0.9);
@@ -135,6 +140,10 @@ body.dark-mode #volume-value {
     color: #e53e3e;
 }
 
+.status.paused {
+    color: #f59e0b;
+}
+
 .timer-display {
     font-size: 4rem;
     font-weight: bold;
@@ -176,13 +185,14 @@ body.dark-mode #volume-value {
     transform: none;
 }
 
-.btn.stop {
-    background: #e53e3e;
+.btn.pause {
+    background: #10b981;
 }
 
-.btn.stop:hover {
-    background: #c53030;
+.btn.pause:hover {
+    background: #059669;
 }
+
 
 /* ハンバーガーメニュー */
 .hamburger-menu {
