@@ -5,16 +5,61 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-YNQ9MQBBQY"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
 
-      gtag('config', 'G-YNQ9MQBBQY');
+        gtag('config', 'G-YNQ9MQBBQY');
     </script>
-    
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blind Pomodoro</title>
+    <title>Blind Pomodoro - 時間を隠すポモドーロタイマー | 集中力向上アプリ</title>
+    <meta name="description"
+        content="Blind Pomodoroは時間表示を隠すことで深い集中を実現する革新的なポモドーロタイマーです。作業中は時間を気にせず、本当の集中状態（フロー）を体験できます。無料でご利用いただけます。">
+    <meta name="keywords" content="ポモドーロタイマー,ポモドーロテクニック,集中力,生産性,タイマー,作業効率,フロー状態,時間管理,勉強タイマー,仕事効率">
+    <meta name="author" content="Blind Pomodoro">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://junyau.github.io/blind_pomodoro/">
+
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="Blind Pomodoro - 時間を隠すポモドーロタイマー">
+    <meta property="og:description" content="時間表示を隠すことで深い集中を実現する革新的なポモドーロタイマー。フロー状態で生産性を最大化しましょう。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://junyau.github.io/blind_pomodoro/">
+    <meta property="og:image" content="https://junyau.github.io/blind_pomodoro/og-image.svg">
+    <meta property="og:site_name" content="Blind Pomodoro">
+    <meta property="og:locale" content="ja_JP">
+
+    <!-- Twitter Card tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Blind Pomodoro - 時間を隠すポモドーロタイマー">
+    <meta name="twitter:description" content="時間表示を隠すことで深い集中を実現する革新的なポモドーロタイマー">
+    <meta name="twitter:image" content="https://junyau.github.io/blind_pomodoro/og-image.svg">
+
+    <!-- 構造化データ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Blind Pomodoro",
+      "description": "時間表示を隠すことで深い集中を実現する革新的なポモドーロタイマー",
+      "url": "https://junyau.github.io/blind_pomodoro/",
+      "applicationCategory": "ProductivityApplication",
+      "operatingSystem": "Web Browser",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "creator": {
+        "@type": "Organization",
+        "name": "Blind Pomodoro"
+      },
+      "keywords": "ポモドーロタイマー, 集中力, 生産性, タイマー, 作業効率"
+    }
+    </script>
+
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 </head>
@@ -93,15 +138,21 @@
     <div class="menu-overlay" id="menu-overlay"></div>
 
     <div class="container">
+        <!-- SEO用の隠しヘッダー -->
+        <header style="position: absolute; left: -9999px;">
+            <h1>Blind Pomodoro - 時間を隠すポモドーロタイマー</h1>
+            <h2>集中力を最大化する革新的な作業タイマー</h2>
+        </header>
+
         <div id="status" class="status">集中の準備</div>
 
         <div id="timer-display" class="hidden"></div>
         <div id="hidden-timer" class="hidden-timer hidden">作業に集中してください...</div>
 
         <div class="controls">
-            <button id="start-btn" class="btn">スタート</button>
-            <button id="pause-btn" class="btn pause hidden">一時停止</button>
-            <button id="resume-btn" class="btn hidden">再開</button>
+            <button id="start-btn" class="btn" aria-label="ポモドーロタイマーを開始">スタート</button>
+            <button id="pause-btn" class="btn pause hidden" aria-label="タイマーを一時停止">一時停止</button>
+            <button id="resume-btn" class="btn hidden" aria-label="タイマーを再開">再開</button>
         </div>
     </div>
 

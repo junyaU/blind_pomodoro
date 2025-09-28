@@ -1,0 +1,97 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Background gradient -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5f7fa;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c3cfe2;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Main circle gradient -->
+    <linearGradient id="circleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4299e1;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#3182ce;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Text gradient -->
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2d3748;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4a5568;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Subtle pattern overlay -->
+  <rect width="1200" height="630" fill="rgba(255,255,255,0.1)"/>
+  
+  <!-- Main visual element: Large circle (timer concept) -->
+  <g transform="translate(200, 115)">
+    <!-- Outer ring -->
+    <circle cx="200" cy="200" r="180" stroke="url(#circleGradient)" stroke-width="8" fill="none" opacity="0.3"/>
+    
+    <!-- Middle ring -->
+    <circle cx="200" cy="200" r="120" stroke="url(#circleGradient)" stroke-width="6" fill="none" opacity="0.5"/>
+    
+    <!-- Inner circle -->
+    <circle cx="200" cy="200" r="60" stroke="url(#circleGradient)" stroke-width="4" fill="none" opacity="0.7"/>
+    
+    <!-- Center point -->
+    <circle cx="200" cy="200" r="8" fill="url(#circleGradient)"/>
+    
+    <!-- Decorative arc (suggesting time but not showing it) -->
+    <path d="M 200 20 A 180 180 0 0 1 380 200" stroke="url(#circleGradient)" stroke-width="12" fill="none" opacity="0.4" stroke-linecap="round"/>
+  </g>
+  
+  <!-- Text content -->
+  <g transform="translate(500, 150)">
+    <!-- Main title -->
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="72" font-weight="300" fill="url(#textGradient)">
+      Blind Pomodoro
+    </text>
+    
+    <!-- Subtitle -->
+    <text x="0" y="80" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="32" font-weight="400" fill="#4a5568" opacity="0.8">
+      A timer that doesn't show time
+    </text>
+    
+    <!-- Key concept -->
+    <text x="0" y="140" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="24" font-weight="300" fill="#718096">
+      Focus without distraction
+    </text>
+    
+    <!-- Features -->
+    <g transform="translate(0, 200)">
+      <circle cx="0" cy="10" r="4" fill="#4299e1" opacity="0.6"/>
+      <text x="20" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" fill="#4a5568">
+        Hidden timer during work
+      </text>
+      
+      <circle cx="0" cy="50" r="4" fill="#4299e1" opacity="0.6"/>
+      <text x="20" y="56" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" fill="#4a5568">
+        Visible timer during breaks
+      </text>
+      
+      <circle cx="0" cy="90" r="4" fill="#4299e1" opacity="0.6"/>
+      <text x="20" y="96" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" fill="#4a5568">
+        Minimal, distraction-free design
+      </text>
+    </g>
+  </g>
+  
+  <!-- Quote/Philosophy -->
+  <g transform="translate(600, 500)">
+    <text x="0" y="0" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="18" font-style="italic" fill="#718096" opacity="0.7">
+      "The best productivity tool is one that makes you forget it exists"
+    </text>
+  </g>
+  
+  <!-- Decorative elements -->
+  <circle cx="1100" cy="100" r="3" fill="#4299e1" opacity="0.3"/>
+  <circle cx="1050" cy="150" r="2" fill="#3182ce" opacity="0.4"/>
+  <circle cx="1150" cy="180" r="2" fill="#4299e1" opacity="0.2"/>
+  
+  <circle cx="100" cy="500" r="2" fill="#4299e1" opacity="0.3"/>
+  <circle cx="50" cy="550" r="3" fill="#3182ce" opacity="0.2"/>
+  <circle cx="150" cy="580" r="1" fill="#4299e1" opacity="0.4"/>
+</svg>
