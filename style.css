@@ -188,6 +188,14 @@ body.dark-mode .fullscreen-description {
     text-align: center;
     max-width: 500px;
     width: 90%;
+
+    /* 文字選択とコピーを無効化（集中妨害防止） */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .status {
@@ -327,6 +335,12 @@ body.dark-mode .fullscreen-description {
     transition: right 0.3s ease;
     z-index: 1001;
     overflow-y: auto;
+
+    /* 設定メニューでは文字選択を有効にする */
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
 }
 
 .side-menu.open {
