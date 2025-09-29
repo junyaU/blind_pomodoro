@@ -9,11 +9,13 @@ class BlindPomodoro {
         this.startTime = null;
         this.totalDuration = 0;
         this.pausedTime = 0;
+        this.audioContext = null; // グローバルなAudioContextを管理
 
         this.loadSettings();
         this.initializeEventListeners();
         this.updateDisplay();
         this.initializeVisibilityAPI();
+        this.initializeAudioContext();
     }
 
     initializeEventListeners() {
@@ -76,8 +78,8 @@ class BlindPomodoro {
         });
 
         // 音を確認ボタンのイベント
-        document.getElementById('test-sound-btn').addEventListener('click', () => {
-            this.playNotificationSound();
+        document.getElementById('test-sound-btn').addEventListener('click', async () => {
+            await this.playNotificationSound();
         });
 
         // ダークモード設定のイベント
@@ -118,6 +120,34 @@ class BlindPomodoro {
                 this.updateTimer();
             }
         });
+    }
+
+    initializeAudioContext() {
+        // ユーザー操作時にAudioContextを初期化するためのイベントリスナーを追加
+        const initAudio = () => {
+            if (!this.audioContext) {
+                try {
+                    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    console.log('AudioContext initialized:', this.audioContext.state);
+                } catch (error) {
+                    console.log('AudioContext initialization failed:', error);
+                }
+            }
+
+            // AudioContextがsuspended状態の場合はresume
+            if (this.audioContext && this.audioContext.state === 'suspended') {
+                this.audioContext.resume().then(() => {
+                    console.log('AudioContext resumed');
+                }).catch(error => {
+                    console.log('AudioContext resume failed:', error);
+                });
+            }
+        };
+
+        // 各種ユーザー操作でAudioContextを初期化
+        document.addEventListener('click', initAudio, { once: true });
+        document.addEventListener('touchstart', initAudio, { once: true });
+        document.addEventListener('keydown', initAudio, { once: true });
     }
 
     getSettings() {
@@ -376,7 +406,7 @@ class BlindPomodoro {
             });
         }
 
-        // Audio notification - gentle chime sound
+        // Audio notification
         this.playNotificationSound();
     }
 
@@ -525,7 +555,7 @@ class BlindPomodoro {
         oscillator2.stop(audioContext.currentTime + 0.4);
     }
 
-    playNotificationSound() {
+    async playNotificationSound() {
         const settings = this.getSettings();
 
         if (!settings.notificationSound) {
@@ -533,20 +563,37 @@ class BlindPomodoro {
         }
 
         try {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            // AudioContextが初期化されていない場合は初期化
+            if (!this.audioContext) {
+                this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                console.log('AudioContext created for notification:', this.audioContext.state);
+            }
+
+            // AudioContextがsuspended状態の場合はresume
+            if (this.audioContext.state === 'suspended') {
+                await this.audioContext.resume();
+                console.log('AudioContext resumed for notification');
+            }
+
+            // AudioContextがrunning状態でない場合は処理をスキップ
+            if (this.audioContext.state !== 'running') {
+                console.log('AudioContext not running, skipping sound:', this.audioContext.state);
+                return;
+            }
+
             const maxVolume = 0.4 * (settings.notificationVolume / 100);
 
             const soundType = settings.soundType || 'beep';
             const sounds = this.getNotificationSounds();
 
             if (sounds[soundType]) {
-                sounds[soundType].create(audioContext, maxVolume);
+                sounds[soundType].create(this.audioContext, maxVolume);
             } else {
-                this.createBeepSound(audioContext, maxVolume);
+                this.createBeepSound(this.audioContext, maxVolume);
             }
 
         } catch (error) {
-            console.log('Audio notification not available');
+            console.log('Audio notification not available:', error);
         }
     }
 }
