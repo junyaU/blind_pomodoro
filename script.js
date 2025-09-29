@@ -70,6 +70,16 @@ class BlindPomodoro {
             this.saveSettings();
         });
 
+        // 通知音種類選択のイベント
+        document.getElementById('sound-type').addEventListener('change', () => {
+            this.saveSettings();
+        });
+
+        // 音を確認ボタンのイベント
+        document.getElementById('test-sound-btn').addEventListener('click', () => {
+            this.playNotificationSound();
+        });
+
         // ダークモード設定のイベント
         document.getElementById('dark-mode').addEventListener('change', (e) => {
             if (e.target.checked) {
@@ -88,9 +98,9 @@ class BlindPomodoro {
         });
 
         // その他の設定変更時の保存
-        const settingInputs = document.querySelectorAll('.setting-group input');
+        const settingInputs = document.querySelectorAll('.setting-group input, .setting-group select');
         settingInputs.forEach(input => {
-            if (input.id !== 'notification-sound' && input.id !== 'notification-volume' && input.id !== 'dark-mode') {
+            if (input.id !== 'notification-sound' && input.id !== 'notification-volume' && input.id !== 'dark-mode' && input.id !== 'sound-type') {
                 input.addEventListener('change', () => this.saveSettings());
             }
         });
@@ -120,6 +130,7 @@ class BlindPomodoro {
             autoStartBreak: document.getElementById('auto-start-break').checked,
             notificationSound: document.getElementById('notification-sound').checked,
             notificationVolume: parseInt(document.getElementById('notification-volume').value),
+            soundType: document.getElementById('sound-type').value,
             darkMode: document.getElementById('dark-mode').checked
         };
     }
@@ -140,6 +151,12 @@ class BlindPomodoro {
             if (settings.notificationVolume !== undefined) {
                 document.getElementById('notification-volume').value = settings.notificationVolume;
                 document.getElementById('volume-value').textContent = `${settings.notificationVolume}%`;
+            }
+            if (settings.soundType !== undefined) {
+                document.getElementById('sound-type').value = settings.soundType;
+            } else {
+                // デフォルト値を明示的に設定
+                document.getElementById('sound-type').value = 'beep';
             }
             if (settings.darkMode !== undefined) {
                 document.getElementById('dark-mode').checked = settings.darkMode;
@@ -288,15 +305,18 @@ class BlindPomodoro {
         } else if (this.isPaused) {
             if (this.currentSession === 'work') {
                 statusEl.textContent = '作業を中断中';
+                statusEl.className = 'status paused';
+                timerDisplayEl.className = 'hidden';
+                hiddenTimerEl.className = 'hidden-timer';
                 hiddenTimerEl.textContent = '作業を中断しています...';
             } else {
                 const sessionName = this.currentSession === 'longBreak' ? '長時間休憩' : '休憩';
                 statusEl.textContent = `${sessionName}を中断中`;
-                hiddenTimerEl.textContent = `${sessionName}を中断しています...`;
+                statusEl.className = 'status paused';
+                timerDisplayEl.className = 'timer-display';
+                hiddenTimerEl.className = 'hidden-timer hidden';
+                this.updateTimerDisplay();
             }
-            statusEl.className = 'status paused';
-            timerDisplayEl.className = 'hidden';
-            hiddenTimerEl.className = 'hidden-timer';
         } else if (this.currentSession === 'work') {
             statusEl.textContent = '作業中';
             statusEl.className = 'status working working-indicator';
@@ -315,8 +335,10 @@ class BlindPomodoro {
 
     updateTimerDisplay() {
         if (this.currentSession !== 'work') {
-            const minutes = Math.floor(this.remainingTime / 60);
-            const seconds = Math.floor(this.remainingTime % 60);
+            // 中断時は pausedTime を、実行中は remainingTime を使用
+            const timeToDisplay = this.isPaused ? this.pausedTime : this.remainingTime;
+            const minutes = Math.floor(timeToDisplay / 60);
+            const seconds = Math.floor(timeToDisplay % 60);
             document.getElementById('timer-display').textContent =
                 `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
         }
@@ -358,39 +380,170 @@ class BlindPomodoro {
         this.playNotificationSound();
     }
 
-    playNotificationSound() {
-        const settings = this.getSettings();
+    getNotificationSounds() {
+        return {
+            'bell': {
+                name: 'ベル',
+                create: (audioContext, volume) => this.createBellSound(audioContext, volume)
+            },
+            'soft': {
+                name: 'ソフトトーン',
+                create: (audioContext, volume) => this.createSoftTone(audioContext, volume)
+            },
+            'chime': {
+                name: 'チャイム',
+                create: (audioContext, volume) => this.createChimeSound(audioContext, volume)
+            },
+            'alert': {
+                name: 'アラート音',
+                create: (audioContext, volume) => this.createAlertSound(audioContext, volume)
+            },
+            'beep': {
+                name: 'ビープ音',
+                create: (audioContext, volume) => this.createBeepSound(audioContext, volume)
+            }
+        };
+    }
 
-        // 通知音がオフの場合は再生しない
-        if (!settings.notificationSound) {
-            return;
-        }
 
-        try {
-            // Create a gentle notification sound using Web Audio API
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    createBellSound(audioContext, volume) {
+        const oscillator1 = audioContext.createOscillator();
+        const oscillator2 = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
 
-            // Create a gentle bell-like sound
+        oscillator1.connect(gainNode);
+        oscillator2.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator1.frequency.setValueAtTime(1200, audioContext.currentTime);
+        oscillator2.frequency.setValueAtTime(1800, audioContext.currentTime);
+
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(volume * 1.8, audioContext.currentTime + 0.02);
+        gainNode.gain.linearRampToValueAtTime(volume * 1.4, audioContext.currentTime + 0.1);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+
+        oscillator1.start(audioContext.currentTime);
+        oscillator2.start(audioContext.currentTime);
+        oscillator1.stop(audioContext.currentTime + 1.5);
+        oscillator2.stop(audioContext.currentTime + 1.5);
+    }
+
+    createSoftTone(audioContext, volume) {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+        oscillator.frequency.linearRampToValueAtTime(660, audioContext.currentTime + 0.5);
+
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(volume * 1.3, audioContext.currentTime + 0.1);
+        gainNode.gain.linearRampToValueAtTime(volume * 1.0, audioContext.currentTime + 0.5);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 1.5);
+    }
+
+    createChimeSound(audioContext, volume) {
+        const frequencies = [800, 1000, 1200];
+        const delay = 0.12;
+
+        frequencies.forEach((freq, index) => {
             const oscillator = audioContext.createOscillator();
             const gainNode = audioContext.createGain();
 
             oscillator.connect(gainNode);
             gainNode.connect(audioContext.destination);
 
-            // Set frequency for a pleasant chime (C5 note)
-            oscillator.frequency.setValueAtTime(523.25, audioContext.currentTime);
+            const startTime = audioContext.currentTime + (index * delay);
+            oscillator.frequency.setValueAtTime(freq, startTime);
 
-            // 音量を設定に基づいて調整（0-100%を0-0.3の範囲にマッピング）
-            const maxVolume = 0.3 * (settings.notificationVolume / 100);
+            gainNode.gain.setValueAtTime(0, startTime);
+            gainNode.gain.linearRampToValueAtTime(volume * 1.4, startTime + 0.05);
+            gainNode.gain.linearRampToValueAtTime(volume * 1.0, startTime + 0.2);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, startTime + 1.0);
 
-            // Create envelope for natural sound
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(maxVolume, audioContext.currentTime + 0.1);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+            oscillator.start(startTime);
+            oscillator.stop(startTime + 1.0);
+        });
+    }
 
-            // Play the sound
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 1.5);
+
+    createAlertSound(audioContext, volume) {
+        const frequencies = [1500, 1500, 1500];
+        const duration = 0.15;
+        const gap = 0.1;
+
+        frequencies.forEach((freq, index) => {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            const startTime = audioContext.currentTime + (index * (duration + gap));
+            oscillator.frequency.setValueAtTime(freq, startTime);
+
+            gainNode.gain.setValueAtTime(0, startTime);
+            gainNode.gain.linearRampToValueAtTime(volume * 2.0, startTime + 0.02);
+            gainNode.gain.linearRampToValueAtTime(volume * 2.0, startTime + duration - 0.02);
+            gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
+
+            oscillator.start(startTime);
+            oscillator.stop(startTime + duration);
+        });
+    }
+
+    createBeepSound(audioContext, volume) {
+        const oscillator1 = audioContext.createOscillator();
+        const oscillator2 = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator1.connect(gainNode);
+        oscillator2.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator1.frequency.setValueAtTime(1000, audioContext.currentTime);
+        oscillator2.frequency.setValueAtTime(1500, audioContext.currentTime + 0.2);
+
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(volume * 1.8, audioContext.currentTime + 0.02);
+        gainNode.gain.linearRampToValueAtTime(volume * 1.8, audioContext.currentTime + 0.18);
+        gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.2);
+        gainNode.gain.linearRampToValueAtTime(volume * 1.8, audioContext.currentTime + 0.22);
+        gainNode.gain.linearRampToValueAtTime(volume * 1.8, audioContext.currentTime + 0.38);
+        gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.4);
+
+        oscillator1.start(audioContext.currentTime);
+        oscillator1.stop(audioContext.currentTime + 0.2);
+        oscillator2.start(audioContext.currentTime + 0.2);
+        oscillator2.stop(audioContext.currentTime + 0.4);
+    }
+
+    playNotificationSound() {
+        const settings = this.getSettings();
+
+        if (!settings.notificationSound) {
+            return;
+        }
+
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const maxVolume = 0.4 * (settings.notificationVolume / 100);
+
+            const soundType = settings.soundType || 'beep';
+            const sounds = this.getNotificationSounds();
+
+            if (sounds[soundType]) {
+                sounds[soundType].create(audioContext, maxVolume);
+            } else {
+                this.createBeepSound(audioContext, maxVolume);
+            }
 
         } catch (error) {
             console.log('Audio notification not available');
