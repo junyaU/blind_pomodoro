@@ -43,6 +43,12 @@ class BlindPomodoro {
 
         hamburgerMenu.addEventListener('click', (e) => {
             e.stopPropagation();
+
+            // 無効化状態の時はクリックを無視
+            if (hamburgerMenu.classList.contains('disabled')) {
+                return;
+            }
+
             toggleSideMenu();
         });
 
@@ -328,7 +334,7 @@ class BlindPomodoro {
         const hiddenTimerEl = document.getElementById('hidden-timer');
 
         if (!this.isRunning) {
-            statusEl.textContent = '集中の準備';
+            statusEl.textContent = '準備完了';
             statusEl.className = 'status';
             timerDisplayEl.className = 'hidden';
             hiddenTimerEl.className = 'hidden-timer hidden';
@@ -378,22 +384,32 @@ class BlindPomodoro {
         const startBtn = document.getElementById('start-btn');
         const pauseBtn = document.getElementById('pause-btn');
         const resumeBtn = document.getElementById('resume-btn');
+        const hamburgerMenu = document.getElementById('hamburger-menu');
 
         if (!this.isRunning) {
             // 初期状態
             startBtn.className = 'btn';
             pauseBtn.className = 'btn pause hidden';
             resumeBtn.className = 'btn hidden';
+            hamburgerMenu.classList.remove('disabled');
         } else if (this.isPaused) {
             // 一時停止中
             startBtn.className = 'btn hidden';
             pauseBtn.className = 'btn pause hidden';
             resumeBtn.className = 'btn';
+            hamburgerMenu.classList.remove('disabled');
         } else {
             // 実行中
             startBtn.className = 'btn hidden';
             pauseBtn.className = 'btn pause';
             resumeBtn.className = 'btn hidden';
+
+            // 作業中のみメニューを無効化
+            if (this.currentSession === 'work') {
+                hamburgerMenu.classList.add('disabled');
+            } else {
+                hamburgerMenu.classList.remove('disabled');
+            }
         }
     }
 
