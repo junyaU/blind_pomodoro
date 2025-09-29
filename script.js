@@ -10,12 +10,14 @@ class BlindPomodoro {
         this.totalDuration = 0;
         this.pausedTime = 0;
         this.audioContext = null; // グローバルなAudioContextを管理
+        this.isFullscreen = false; // 全画面状態を管理
 
         this.loadSettings();
         this.initializeEventListeners();
         this.updateDisplay();
         this.initializeVisibilityAPI();
         this.initializeAudioContext();
+        this.initializeFullscreen();
     }
 
     initializeEventListeners() {
@@ -154,6 +156,92 @@ class BlindPomodoro {
         document.addEventListener('click', initAudio, { once: true });
         document.addEventListener('touchstart', initAudio, { once: true });
         document.addEventListener('keydown', initAudio, { once: true });
+    }
+
+    initializeFullscreen() {
+        // 全画面ボタンのイベントリスナー
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        fullscreenBtn.addEventListener('click', () => {
+            this.toggleFullscreen();
+        });
+
+        // 全画面状態の変更を監視
+        document.addEventListener('fullscreenchange', () => {
+            this.handleFullscreenChange();
+        });
+        document.addEventListener('webkitfullscreenchange', () => {
+            this.handleFullscreenChange();
+        });
+        document.addEventListener('mozfullscreenchange', () => {
+            this.handleFullscreenChange();
+        });
+        document.addEventListener('MSFullscreenChange', () => {
+            this.handleFullscreenChange();
+        });
+    }
+
+    toggleFullscreen() {
+        if (!this.isFullscreen) {
+            this.enterFullscreen();
+        } else {
+            this.exitFullscreen();
+        }
+    }
+
+    enterFullscreen() {
+        const element = document.documentElement;
+
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        }
+    }
+
+    exitFullscreen() {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+
+    handleFullscreenChange() {
+        const fullscreenElement = document.fullscreenElement ||
+                                 document.webkitFullscreenElement ||
+                                 document.mozFullScreenElement ||
+                                 document.msFullscreenElement;
+
+        this.isFullscreen = !!fullscreenElement;
+        this.updateFullscreenButton();
+
+        // 全画面時は設定メニューを自動的に閉じる
+        if (this.isFullscreen) {
+            const hamburgerMenu = document.getElementById('hamburger-menu');
+            const sideMenu = document.getElementById('side-menu');
+            const menuOverlay = document.getElementById('menu-overlay');
+
+            hamburgerMenu.classList.remove('active');
+            sideMenu.classList.remove('open');
+            menuOverlay.classList.remove('active');
+        }
+    }
+
+    updateFullscreenButton() {
+        const fullscreenBtn = document.getElementById('fullscreen-btn');
+        if (this.isFullscreen) {
+            fullscreenBtn.innerHTML = '🪟 全画面を終了';
+        } else {
+            fullscreenBtn.innerHTML = '🖥️ 全画面表示';
+        }
     }
 
     getSettings() {
